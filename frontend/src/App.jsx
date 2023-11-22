@@ -1,10 +1,11 @@
 import "./App.css";
+import Forms from "./components/Forms/Forms";
 
 function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold">Hello World</h1>
-    </>
+    <div className="container mx-auto px-4 h-full">
+      <Forms />
+    </div>
   );
 }
 
