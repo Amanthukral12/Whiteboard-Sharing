@@ -17,7 +17,7 @@ const CreateRoomForm = (props) => {
       />
       <div className="flex justify-evenly">
         <button
-          className=" bg-blue-600 w-2/5 shadow-md rounded-lg text-xl font-semibold py-1"
+          className=" bg-blue-600 w-2/5 shadow-md rounded-lg lg:text-xl text-base font-semibold py-1"
           type="button"
         >
           Generate
