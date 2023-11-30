@@ -4,10 +4,11 @@ import WhiteBoard from "../components/WhiteBoard/WhiteBoard";
 import "./styles.css";
 const RoomPage = (props) => {
   const [tool, setTool] = useState("pencil");
-  const [color, setColor] = useState("black");
+  const [color, setColor] = useState("#000000");
+  const [elements, setElements] = useState([]);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
-  console.log(typeof canvasRef);
+
   return (
     <div className="">
       <h1 className="text-center py-5 text-2xl">
@@ -82,8 +83,13 @@ const RoomPage = (props) => {
           </div>
         </div>
       </div>
-      <div className="flex mt-8">
-        <WhiteBoard canvasRef={canvasRef} ctxRef={ctxRef} />
+      <div className="flex flex-col mt-8">
+        <WhiteBoard
+          canvasRef={canvasRef}
+          ctxRef={ctxRef}
+          elements={elements}
+          setElements={setElements}
+        />
       </div>
     </div>
   );
