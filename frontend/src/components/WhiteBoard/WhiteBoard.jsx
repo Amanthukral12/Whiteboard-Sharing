@@ -183,8 +183,8 @@ const WhiteBoard = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      className=" border-2 overflow-hidden border-black "
-      style={{ height: "500px" }}
+      className=" border-2 overflow-hidden border-black mb-8"
+      style={{ height: "80vh" }}
     >
       <canvas ref={canvasRef} />
     </div>

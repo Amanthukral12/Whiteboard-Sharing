@@ -9,6 +9,19 @@ const RoomPage = (props) => {
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
 
+  const handleClearCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.fillRect = "white";
+    ctxRef.current.clearRect(
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+    setElements([]);
+  };
+
   return (
     <div className="">
       <h1 className="text-center py-5 text-2xl">
@@ -77,7 +90,10 @@ const RoomPage = (props) => {
         </div>
         <div className="flex lg:w-1/4 w-full justify-center lg:mb-0 mb-3">
           <div className="flex gap-2 items-center">
-            <button className="px-4 py-1 bg-red-900 rounded-sm">
+            <button
+              className="px-4 py-1 bg-red-900 rounded-sm"
+              onClick={() => handleClearCanvas()}
+            >
               Clear Canvas
             </button>
           </div>
