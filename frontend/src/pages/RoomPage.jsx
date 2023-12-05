@@ -41,7 +41,7 @@ const RoomPage = (props) => {
             />
           </div>
           <div className="flex gap-1 mr-1">
-            <label htmlFor="rect">Rect</label>
+            <label htmlFor="rect">Rectangle</label>
             <input
               type="radio"
               name="tool"
@@ -89,6 +89,7 @@ const RoomPage = (props) => {
           ctxRef={ctxRef}
           elements={elements}
           setElements={setElements}
+          tool={tool}
         />
       </div>
     </div>
