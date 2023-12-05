@@ -90,6 +90,7 @@ const RoomPage = (props) => {
           elements={elements}
           setElements={setElements}
           tool={tool}
+          color={color}
         />
       </div>
     </div>

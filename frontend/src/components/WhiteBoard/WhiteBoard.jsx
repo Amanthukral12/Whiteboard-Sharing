@@ -2,24 +2,37 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import propTypes from "prop-types";
 import rough from "roughjs";
 const roughGenerator = rough.generator();
-const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
+const WhiteBoard = ({
+  canvasRef,
+  ctxRef,
+  elements,
+  setElements,
+  tool,
+  color,
+}) => {
   const [isDrawing, setIsDrawing] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
+
     canvas.height = window.innerHeight * 2;
     canvas.width = window.innerWidth * 2;
     canvas.style.width = `${window.innerWidth}px`;
     canvas.style.height = `${window.innerHeight}px`;
     const context = canvas.getContext("2d");
 
-    context.strokeWidth = 5;
+    context.strokeWidth = 2;
     context.scale(2, 2);
     context.lineCap = "round";
+    context.strokeStyle = color;
 
     //context.lineWidth = 5;
     ctxRef.current = context;
   }, []);
+
+  useEffect(() => {
+    ctxRef.current.strokeStyle = color;
+  }, [color]);
 
   useLayoutEffect(() => {
     const roughCanvas = rough.canvas(canvasRef.current);
@@ -40,7 +53,8 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
             element.offsetX,
             element.offsetY,
             element.width,
-            element.height
+            element.height,
+            { stroke: element.stroke, strokeWidth: 2, roughness: 0 }
           )
         );
       } else if (element.type === "rect") {
@@ -49,11 +63,16 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
             element.offsetX,
             element.offsetY,
             element.width,
-            element.height
+            element.height,
+            { stroke: element.stroke, strokeWidth: 2, roughness: 0 }
           )
         );
       } else if (element.type === "pencil") {
-        roughCanvas.linearPath(element.path);
+        roughCanvas.linearPath(element.path, {
+          stroke: element.stroke,
+          strokeWidth: 2,
+          roughness: 0,
+        });
       }
     });
   }, [elements]);
@@ -69,7 +88,8 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
           offsetX,
           offsetY,
           path: [[offsetX, offsetY]],
-          stroke: "#000000",
+          stroke: color,
+          element: tool,
         },
       ]);
     } else if (tool === "line") {
@@ -81,7 +101,8 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
           offsetY,
           width: 0,
           height: 0,
-          stroke: "#000000",
+          stroke: color,
+          element: tool,
         },
       ]);
     } else if (tool === "rect") {
@@ -93,7 +114,8 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
           offsetY,
           width: offsetX,
           height: offsetY,
-          stroke: "#000000",
+          stroke: color,
+          element: tool,
         },
       ]);
     }
@@ -111,7 +133,7 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
                 offsetX: ele.offsetX,
                 offsetY: ele.offsetY,
                 path: [...ele.path, [offsetX, offsetY]],
-                stroke: "#000000",
+                stroke: ele.stroke,
                 element: "pencil",
                 type: "pencil",
               };
@@ -128,6 +150,7 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
                 ...ele,
                 width: offsetX,
                 height: offsetY,
+                stroke: ele.stroke,
               };
             } else {
               return ele;
@@ -142,6 +165,7 @@ const WhiteBoard = ({ canvasRef, ctxRef, elements, setElements, tool }) => {
                 ...ele,
                 width: offsetX - ele.offsetX,
                 height: offsetY - ele.offsetY,
+                stroke: ele.stroke,
               };
             } else {
               return ele;
@@ -173,6 +197,7 @@ WhiteBoard.propTypes = {
   elements: propTypes.array,
   setElements: propTypes.func,
   tool: propTypes.string,
+  color: propTypes.string,
 };
 
 export default WhiteBoard;
