@@ -6,6 +6,7 @@ const RoomPage = (props) => {
   const [tool, setTool] = useState("pencil");
   const [color, setColor] = useState("#000000");
   const [elements, setElements] = useState([]);
+  const [history, setHistory] = useState([]);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
 
@@ -20,6 +21,27 @@ const RoomPage = (props) => {
       canvasRef.current.height
     );
     setElements([]);
+  };
+
+  const undo = () => {
+    setHistory((prevHistory) => [
+      ...prevHistory,
+      elements[elements.length - 1],
+    ]);
+
+    elements.length === 1
+      ? handleClearCanvas()
+      : setElements((prevElements) =>
+          prevElements.slice(0, prevElements.length - 1)
+        );
+  };
+
+  const redo = () => {
+    setElements((prevElements) => [
+      ...prevElements,
+      history[history.length - 1],
+    ]);
+    setHistory((prevHistory) => prevHistory.slice(0, prevHistory.length - 1));
   };
 
   return (
@@ -80,10 +102,18 @@ const RoomPage = (props) => {
         </div>
         <div className="flex lg:w-1/4 w-full justify-center lg:mb-0 mb-3">
           <div className="flex gap-2 items-center">
-            <button className="text-black px-4 py-1 bg-slate-400 rounded-sm">
+            <button
+              className="text-black px-4 py-1 bg-slate-400 rounded-sm"
+              disabled={elements.length === 0}
+              onClick={() => undo()}
+            >
               Undo
             </button>
-            <button className="px-4 py-1 bg-[#283f4dc2] rounded-sm">
+            <button
+              className="px-4 py-1 bg-[#283f4dc2] rounded-sm"
+              disabled={history.length < 1}
+              onClick={() => redo()}
+            >
               Redo
             </button>
           </div>
