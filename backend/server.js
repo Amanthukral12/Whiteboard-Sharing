@@ -9,12 +9,23 @@ app.get("/", (req, res) => {
   res.send("this is backend");
 });
 
+let roomIdGlobal, imageURLGlobal;
+
 io.on("connection", (socket) => {
   socket.on("userJoined", (data) => {
     const { name, userId, roomId, host, presenter } = data;
-    console.log(roomId);
+    roomIdGlobal = roomId;
     socket.join(roomId);
     socket.emit("userIsJoined", { success: true });
+    socket.broadcast.to(roomId).emit("whiteBoardDataResponse", {
+      imageUrl: imageURLGlobal,
+    });
+  });
+  socket.on("whiteboardData", (data) => {
+    imageURLGlobal = data;
+    socket.broadcast.to(roomIdGlobal).emit("whiteBoardDataResponse", {
+      imageUrl: data,
+    });
   });
 });
 

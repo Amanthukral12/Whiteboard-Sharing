@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import propTypes from "prop-types";
 import rough from "roughjs";
 const roughGenerator = rough.generator();
@@ -9,7 +9,34 @@ const WhiteBoard = ({
   setElements,
   tool,
   color,
+  user,
+  socket,
 }) => {
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    socket.on("whiteBoardDataResponse", (data) => {
+      console.log(data);
+      setImage(data.imageUrl);
+    });
+  }, [socket]);
+
+  console.log(image);
+
+  if (!user?.presenter) {
+    return (
+      <div
+        className=" border-2 overflow-hidden bg-white border-black mb-8"
+        style={{ height: "80vh" }}
+      >
+        <img
+          src={image}
+          alt="Real time white board image shared by presenter"
+          className="text-black"
+        />
+      </div>
+    );
+  }
   const [isDrawing, setIsDrawing] = useState(false);
 
   useEffect(() => {
@@ -35,46 +62,50 @@ const WhiteBoard = ({
   }, [color]);
 
   useLayoutEffect(() => {
-    const roughCanvas = rough.canvas(canvasRef.current);
+    if (canvasRef) {
+      const roughCanvas = rough.canvas(canvasRef.current);
 
-    if (elements.length > 0) {
-      ctxRef.current.clearRect(
-        0,
-        0,
-        canvasRef.current.width,
-        canvasRef.current.height
-      );
-    }
-
-    elements.forEach((element) => {
-      if (element.type === "line") {
-        roughCanvas.draw(
-          roughGenerator.line(
-            element.offsetX,
-            element.offsetY,
-            element.width,
-            element.height,
-            { stroke: element.stroke, strokeWidth: 2, roughness: 0 }
-          )
+      if (elements.length > 0) {
+        ctxRef.current.clearRect(
+          0,
+          0,
+          canvasRef.current.width,
+          canvasRef.current.height
         );
-      } else if (element.type === "rect") {
-        roughCanvas.draw(
-          roughGenerator.rectangle(
-            element.offsetX,
-            element.offsetY,
-            element.width,
-            element.height,
-            { stroke: element.stroke, strokeWidth: 2, roughness: 0 }
-          )
-        );
-      } else if (element.type === "pencil") {
-        roughCanvas.linearPath(element.path, {
-          stroke: element.stroke,
-          strokeWidth: 2,
-          roughness: 0,
-        });
       }
-    });
+
+      elements.forEach((element) => {
+        if (element.type === "line") {
+          roughCanvas.draw(
+            roughGenerator.line(
+              element.offsetX,
+              element.offsetY,
+              element.width,
+              element.height,
+              { stroke: element.stroke, strokeWidth: 2, roughness: 0 }
+            )
+          );
+        } else if (element.type === "rect") {
+          roughCanvas.draw(
+            roughGenerator.rectangle(
+              element.offsetX,
+              element.offsetY,
+              element.width,
+              element.height,
+              { stroke: element.stroke, strokeWidth: 2, roughness: 0 }
+            )
+          );
+        } else if (element.type === "pencil") {
+          roughCanvas.linearPath(element.path, {
+            stroke: element.stroke,
+            strokeWidth: 2,
+            roughness: 0,
+          });
+        }
+      });
+      const canvasImage = canvasRef.current.toDataURL();
+      socket.emit("whiteboardData", canvasImage);
+    }
   }, [elements]);
 
   const handleMouseDown = (e) => {
@@ -178,12 +209,13 @@ const WhiteBoard = ({
   const handleMouseUp = () => {
     setIsDrawing(false);
   };
+
   return (
     <div
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      className=" border-2 overflow-hidden border-black mb-8"
+      className=" border-2 overflow-hidden bg-white border-black mb-8"
       style={{ height: "80vh" }}
     >
       <canvas ref={canvasRef} />
@@ -198,6 +230,8 @@ WhiteBoard.propTypes = {
   setElements: propTypes.func,
   tool: propTypes.string,
   color: propTypes.string,
+  user: propTypes.object,
+  socket: propTypes.object,
 };
 
 export default WhiteBoard;
