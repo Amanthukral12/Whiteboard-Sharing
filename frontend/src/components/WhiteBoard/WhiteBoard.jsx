@@ -16,23 +16,21 @@ const WhiteBoard = ({
 
   useEffect(() => {
     socket.on("whiteBoardDataResponse", (data) => {
-      console.log(data);
       setImage(data.imageUrl);
     });
   }, [socket]);
 
-  console.log(image);
-
   if (!user?.presenter) {
     return (
-      <div
-        className=" border-2 overflow-hidden bg-white border-black mb-8"
-        style={{ height: "80vh" }}
-      >
+      <div className=" border-2 bg-white border-black mb-8">
         <img
           src={image}
           alt="Real time white board image shared by presenter"
           className="text-black"
+          style={{
+            width: `1500px`,
+            height: `780px`,
+          }}
         />
       </div>
     );
@@ -41,15 +39,15 @@ const WhiteBoard = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-
-    canvas.height = window.innerHeight * 2;
-    canvas.width = window.innerWidth * 2;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
     const context = canvas.getContext("2d");
+    context.scale(1, 1);
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
 
     context.strokeWidth = 2;
-    context.scale(2, 2);
+
     context.lineCap = "round";
     context.strokeStyle = color;
 
@@ -215,8 +213,7 @@ const WhiteBoard = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      className=" border-2 overflow-hidden bg-white border-black mb-8"
-      style={{ height: "80vh" }}
+      className=" border-2 overflow-hidden bg-white border-black mb-8 "
     >
       <canvas ref={canvasRef} />
     </div>
