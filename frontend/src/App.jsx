@@ -17,14 +17,21 @@ const socket = io(server, connectionOptions);
 
 function App() {
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     socket.on("userIsJoined", (data) => {
       if (data.success) {
         console.log("userIsJoined");
+        console.log(data);
+        setUsers(data.users);
       } else {
         console.log("userJoined error");
       }
+    });
+    socket.on("allUsers", (data) => {
+      console.log(data);
+      setUsers(data);
     });
   }, []);
 
@@ -56,7 +63,7 @@ function App() {
         />
         <Route
           path="/:roomId"
-          element={<RoomPage user={user} socket={socket} />}
+          element={<RoomPage user={user} socket={socket} users={users} />}
         />
       </Routes>
     </div>

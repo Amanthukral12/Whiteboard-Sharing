@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import propTypes from "prop-types";
 import WhiteBoard from "../components/WhiteBoard/WhiteBoard";
 import "./styles.css";
-const RoomPage = ({ user, socket }) => {
+const RoomPage = ({ user, socket, users }) => {
   const [tool, setTool] = useState("pencil");
   const [color, setColor] = useState("#000000");
   const [elements, setElements] = useState([]);
@@ -47,7 +47,7 @@ const RoomPage = ({ user, socket }) => {
   return (
     <div className="">
       <h1 className="text-center py-5 text-2xl">
-        White Board Sharing App <span>[Users Online : 0]</span>
+        White Board Sharing App <span>[Users Online : {users.length}]</span>
       </h1>
       {user && user.presenter && (
         <div className="flex md:flex-row flex-col mt-4 mb-5 justify-around items-center">
@@ -151,6 +151,7 @@ const RoomPage = ({ user, socket }) => {
 RoomPage.propTypes = {
   user: propTypes.object,
   socket: propTypes.object,
+  users: propTypes.array,
 };
 
 export default RoomPage;
