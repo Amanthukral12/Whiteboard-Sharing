@@ -1,9 +1,8 @@
 const users = [];
 
-const addUser = (name, id, roomId, host, presenter) => {
-  const user = { name, id, roomId, host, presenter };
+const addUser = (name, userId, roomId, host, presenter) => {
+  const user = { name, userId, roomId, host, presenter };
   users.push(user);
-  console.log(users);
   return users.filter((user) => user.roomId === roomId);
 };
 

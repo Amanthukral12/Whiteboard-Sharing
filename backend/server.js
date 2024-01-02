@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
     const { name, userId, roomId, host, presenter } = data;
     roomIdGlobal = roomId;
     socket.join(roomId);
-    const users = addUser(name, socket.id, roomId, host, presenter);
+    const users = addUser(name, userId, roomId, host, presenter);
 
     socket.emit("userIsJoined", { success: true, users });
     socket.broadcast.to(roomId).emit("allUsers", users);

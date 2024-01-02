@@ -2,11 +2,15 @@ import { useRef, useState } from "react";
 import propTypes from "prop-types";
 import WhiteBoard from "../components/WhiteBoard/WhiteBoard";
 import "./styles.css";
+import { GiHamburgerMenu } from "react-icons/gi";
+import Sidebar from "../components/Sidebar/Sidebar";
 const RoomPage = ({ user, socket, users }) => {
   const [tool, setTool] = useState("pencil");
   const [color, setColor] = useState("#000000");
   const [elements, setElements] = useState([]);
   const [history, setHistory] = useState([]);
+  const [openedUserTab, setOpenedUserTab] = useState(false);
+
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
 
@@ -46,6 +50,18 @@ const RoomPage = ({ user, socket, users }) => {
 
   return (
     <div className="">
+      <GiHamburgerMenu
+        className=" absolute left-5 top-5 rounded text-2xl cursor-pointer"
+        onClick={() => setOpenedUserTab(!openedUserTab)}
+      />
+      <Sidebar
+        shown={openedUserTab}
+        close={() => setOpenedUserTab(!openedUserTab)}
+        users={users}
+        user={user}
+      >
+        <h1>hello</h1>
+      </Sidebar>
       <h1 className="text-center py-5 text-2xl">
         White Board Sharing App <span>[Users Online : {users.length}]</span>
       </h1>
