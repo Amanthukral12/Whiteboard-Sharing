@@ -12,29 +12,6 @@ const WhiteBoard = ({
   user,
   socket,
 }) => {
-  const [image, setImage] = useState(null);
-
-  useEffect(() => {
-    socket.on("whiteBoardDataResponse", (data) => {
-      setImage(data.imageUrl);
-    });
-  }, [socket]);
-
-  if (!user?.presenter) {
-    return (
-      <div className=" border-2 bg-white border-black mb-8">
-        <img
-          src={image}
-          alt="Real time white board image shared by presenter"
-          className="text-black"
-          style={{
-            width: `1500px`,
-            height: `780px`,
-          }}
-        />
-      </div>
-    );
-  }
   const [isDrawing, setIsDrawing] = useState(false);
 
   useEffect(() => {

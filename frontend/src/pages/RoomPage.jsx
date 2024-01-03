@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import propTypes from "prop-types";
 import WhiteBoard from "../components/WhiteBoard/WhiteBoard";
 import "./styles.css";
@@ -13,6 +13,14 @@ const RoomPage = ({ user, socket, users }) => {
 
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
+
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    socket.on("whiteBoardDataResponse", (data) => {
+      setImage(data.imageUrl);
+    });
+  }, [socket]);
 
   const handleClearCanvas = () => {
     const canvas = canvasRef.current;
@@ -149,16 +157,30 @@ const RoomPage = ({ user, socket, users }) => {
       )}
 
       <div className="flex flex-col mt-8">
-        <WhiteBoard
-          canvasRef={canvasRef}
-          ctxRef={ctxRef}
-          elements={elements}
-          setElements={setElements}
-          tool={tool}
-          color={color}
-          user={user}
-          socket={socket}
-        />
+        {user && user.presenter ? (
+          <WhiteBoard
+            canvasRef={canvasRef}
+            ctxRef={ctxRef}
+            elements={elements}
+            setElements={setElements}
+            tool={tool}
+            color={color}
+            user={user}
+            socket={socket}
+          />
+        ) : (
+          <div className=" border-2 bg-white border-black mb-8">
+            <img
+              src={image}
+              alt="Real time white board image shared by presenter"
+              className="text-black"
+              style={{
+                width: `1500px`,
+                height: `780px`,
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
