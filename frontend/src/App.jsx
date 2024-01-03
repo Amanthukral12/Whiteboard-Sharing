@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import "./App.css";
 import Forms from "./components/Forms/Forms";
 import RoomPage from "./pages/RoomPage";
-
+import { ToastContainer, toast } from "react-toastify";
 const server = "http://localhost:5000";
 const connectionOptions = {
   "force new connection": true,
@@ -23,15 +23,21 @@ function App() {
     socket.on("userIsJoined", (data) => {
       if (data.success) {
         console.log("userIsJoined");
-        console.log(data);
         setUsers(data.users);
       } else {
         console.log("userJoined error");
       }
     });
     socket.on("allUsers", (data) => {
-      console.log(data);
       setUsers(data);
+    });
+
+    socket.on("userJoinedMessageBroadcasted", (data) => {
+      toast.info(`${data} joined the room`);
+    });
+
+    socket.on("userLeftMessageBroadcasted", (data) => {
+      toast.info(`${data} left the room`);
     });
   }, []);
 
@@ -56,6 +62,7 @@ function App() {
   };
   return (
     <div className="container mx-auto px-4 h-full">
+      <ToastContainer />
       <Routes>
         <Route
           path="/"
