@@ -5,7 +5,7 @@ import "./App.css";
 import Forms from "./components/Forms/Forms";
 import RoomPage from "./pages/RoomPage";
 import { ToastContainer, toast } from "react-toastify";
-const server = "http://localhost:5000";
+const server = "https://whiteboard-sharing-backend.onrender.com/";
 const connectionOptions = {
   "force new connection": true,
   reconnectionAttempts: "Infinity",
