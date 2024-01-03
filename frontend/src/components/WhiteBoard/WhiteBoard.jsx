@@ -9,7 +9,7 @@ const WhiteBoard = ({
   setElements,
   tool,
   color,
-  user,
+
   socket,
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
