@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const CreateRoomForm = ({ uuid, socket, setUser }) => {
   const [roomId, setRoomId] = useState(uuid());
   const [name, setName] = useState("");
+  const [isCopied, setIsCopied] = useState(false);
   const navigate = useNavigate();
   const handleCreateRoom = (e) => {
     e.preventDefault();
@@ -18,6 +19,26 @@ const CreateRoomForm = ({ uuid, socket, setUser }) => {
     setUser(roomData);
     navigate(`/${roomId}`);
     socket.emit("userJoined", roomData);
+  };
+  async function copytextToClipboard(text) {
+    if ("clipboard" in navigator) {
+      return await navigator.clipboard.writeText(text);
+    } else {
+      return document.execCommand("copy", true, text);
+    }
+  }
+  const handleCopyClick = (e) => {
+    e.preventDefault();
+    copytextToClipboard(roomId)
+      .then(() => {
+        setIsCopied(true);
+        setTimeout(() => {
+          setIsCopied(false);
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <form className=" mt-5">
@@ -43,8 +64,11 @@ const CreateRoomForm = ({ uuid, socket, setUser }) => {
         >
           Generate
         </button>
-        <button className="bg-white w-2/5 text-gray-800 text-xl shadow-md rounded-lg font-semibold py-1">
-          Copy
+        <button
+          className="bg-white w-2/5 text-gray-800 text-xl shadow-md rounded-lg font-semibold py-1"
+          onClick={(e) => handleCopyClick(e)}
+        >
+          {isCopied ? "Copied!" : "Copy"}
         </button>
       </div>
       <button
